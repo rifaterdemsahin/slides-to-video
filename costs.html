@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>💰 The Cost Ledger — Scaling AI Agents: API Burn vs Production Spend</title>
+<meta name="description" content="Two cost columns for an agent fleet: the API/token burn of running agents, and the one-off production cost of the video document. Levers, guardrails and the verification log.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230B1220'/><text y='24' x='4' font-size='22'>💰</text></svg>">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#111A2C; --panel2:#0E1626;
+    --line:rgba(255,255,255,.09);
+    --cyan:#4FC3D9; --blue:#3B82F6; --red:#EF4444;
+    --green:#34D399; --amber:#FBBF24; --pink:#EC4899;
+    --white:#FFFFFF; --grey:#B0B6C0; --dim:#78808F;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--grey);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(79,195,217,.3)}
+  a:hover{border-bottom-color:var(--cyan)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin:0 0 18px}
+  .accent{display:flex;gap:5px;margin-top:26px}
+  .accent i{display:block;height:4px;border-radius:1px}
+  .accent i.b{width:52px;background:var(--blue)}
+  .accent i.r{width:20px;background:var(--red)}
+  header{padding:88px 0 64px;border-bottom:1px solid var(--line)}
+  h1{font-size:clamp(32px,5.4vw,54px);line-height:1.07;letter-spacing:-.025em;color:var(--white);font-weight:800;margin:0 0 22px}
+  header p.lede{font-size:clamp(16px,2vw,19px);max-width:64ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:34px;font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.04em}
+  .meta b{color:var(--grey);font-weight:500}
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:clamp(22px,3vw,30px);color:var(--white);font-weight:700;letter-spacing:-.015em;margin:0 0 12px;line-height:1.22}
+  h2 .n{font-family:var(--mono);font-size:13px;color:var(--cyan);font-weight:400;margin-right:12px;letter-spacing:.1em}
+  h3{color:var(--white);font-size:16px;font-weight:650;margin:0 0 8px}
+  p{margin:0 0 16px}
+  .sub{color:var(--dim);font-size:15px;max-width:68ch;margin-bottom:28px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+  .card h3{font-size:15px;margin-bottom:6px}
+  .card p{font-size:14px;margin:0}
+  .card .k{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:10px}
+  .card.zero{border-color:rgba(52,211,153,.3)}
+  .card.zero .k{color:var(--green)}
+  .card.burn{border-color:rgba(239,68,68,.3)}
+  .card.burn .k{color:var(--red)}
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{padding-left:24px;position:relative;margin-bottom:11px;font-size:14.5px}
+  ul.clean li::before{content:"▸";position:absolute;left:2px;top:-1px;color:var(--cyan);font-size:12px}
+  ul.clean li b{color:var(--white);font-weight:600}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:500}
+  td:first-child{color:var(--white);font-weight:600}
+  td.num{font-family:var(--mono);white-space:nowrap}
+  tr.hl td{background:rgba(239,68,68,.06)}
+  tr.hl td:first-child{color:var(--red)}
+  tr.free td{background:rgba(52,211,153,.05)}
+  tr.free td:first-child{color:var(--green)}
+  .quote{border-left:3px solid var(--blue);padding:4px 0 4px 20px;margin:26px 0;color:var(--white);font-size:17px;font-weight:500}
+  .quote.r{border-left-color:var(--red)}
+  .quote.g{border-left-color:var(--green)}
+  code,kbd{font-family:var(--mono);font-size:12.5px;background:rgba(79,195,217,.1);color:#9FE3F1;padding:2px 6px;border-radius:4px;border:1px solid rgba(79,195,217,.18)}
+  .curve{display:flex;align-items:flex-end;gap:10px;height:170px;margin:30px 0 8px}
+  .curve div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px}
+  .curve .bar{width:100%;background:linear-gradient(180deg,var(--red),rgba(239,68,68,.25));border-radius:3px 3px 0 0}
+  .curve .lbl{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.06em}
+  .curvecap{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.03em;margin-bottom:30px}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:6px}
+  .pinkd{background:var(--pink)}
+  .blued{background:var(--blue)}
+  .green{color:var(--green)}
+  .red{color:var(--red)}
+  .amber{color:var(--amber)}
+  .note{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:16px 20px;font-size:14px;margin:24px 0}
+  .note b{color:var(--white)}
+  .feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:20px}
+  .feat span{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--grey);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+  .feat span.hot{color:var(--cyan);border-color:rgba(79,195,217,.3)}
+  .anchor{display:flex;flex-wrap:wrap;gap:8px 24px;font-family:var(--mono);font-size:12px;margin-top:30px}
+  footer{padding:56px 0 80px;color:var(--dim);font-size:13px}
+  footer .row{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:12px}
+  @media(max-width:600px){header{padding:64px 0 48px}td:first-child{white-space:normal}.curve{height:130px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">🧾 Financial Exposure · System Architecture &amp; Operations</p>
+    <h1>💰 The Cost Ledger</h1>
+    <p class="lede">Two columns, and they must never be confused. 💸 What it costs to <em>run</em> a fleet of agents every day — and 🎬 what it cost, once, to <em>make</em> the video documenting them.</p>
+    <div class="accent"><i class="b"></i><i class="r"></i></div>
+    <div class="meta">
+      <span><b>Scope</b> 50+ agents</span>
+      <span><b>Burn curve</b> $20 → $100+</span>
+      <span><b>Production</b> 1 seat</span>
+      <span><b>Timeline hours</b> 0</span>
+    </div>
+    <div class="anchor">
+      <a href="index.html">← 🎬 The video page</a>
+      <a href="#columnA">💸 Column A · API burn</a>
+      <a href="#columnB">🎬 Column B · production</a>
+      <a href="#ledger">📊 The ledger</a>
+      <a href="#guardrails">🚦 Guardrails</a>
+      <a href="#trust">🔒 Verification log</a>
+    </div>
+  </div>
+</header>
+
+<section id="two">
+  <div class="wrap">
+    <p class="eyebrow">⚖️ The distinction that saves the budget</p>
+    <h2>Recurring burn vs one-off spend</h2>
+    <p class="sub">The video's argument is a <em>recurring</em> cost argument, not a purchasing decision. An agent that costs $2 to configure and $60/month to run is a subscription you forgot you signed. The video document that explains it cost one seat, once.</p>
+    <div class="grid">
+      <div class="card burn">
+        <span class="k">💸 Column A · recurring</span>
+        <h3>What the fleet burns</h3>
+        <p>Per-token API calls, per agent, per day. Grows with activity and never appears on an invoice you approved. This is the column the cost curve lives in.</p>
+      </div>
+      <div class="card zero">
+        <span class="k">🎬 Column B · one-off</span>
+        <h3>What the video cost</h3>
+        <p>A Workspace seat you may already hold, plus the time to talk to Gemini. No editor, no stock licence bought separately, no camera, no contractor.</p>
+      </div>
+    </div>
+    <div class="quote g">💡 The cheap column is the one that explains the expensive column. That asymmetry is the whole point.</div>
+  </div>
+</section>
+
+<section id="columnA">
+  <div class="wrap">
+    <p class="eyebrow">💸 Column A · Recurring burn</p>
+    <h2>The API cost curve</h2>
+    <p class="sub">Not a straight line. Each agent that "works" gets called more often, gets more context attached, and recruits more agents. The bill compounds faster than the headcount.</p>
+
+    <div class="curve">
+      <div><span class="lbl">$20</span><span class="bar" style="height:20%"></span></div>
+      <div><span class="lbl">$40</span><span class="bar" style="height:40%"></span></div>
+      <div><span class="lbl">$60</span><span class="bar" style="height:60%"></span></div>
+      <div><span class="lbl">$80</span><span class="bar" style="height:80%"></span></div>
+      <div><span class="lbl">$100+</span><span class="bar" style="height:100%"></span></div>
+    </div>
+    <p class="curvecap">📈 Observed trajectory quoted in the film — the shape that makes people stop trusting "it's only pennies per call".</p>
+
+    <div class="quote r">💸 Do not spend API dollars on predictable logic.</div>
+
+    <h2 style="margin-top:44px">🧠 Where the money actually goes</h2>
+    <p class="sub">Split every task in the pipeline into one of two buckets before it runs. The bucket decides the cost.</p>
+
+    <div class="grid">
+      <div class="card zero">
+        <span class="k">✅ Deterministic · $0 tokens</span>
+        <h3>Rule logic</h3>
+        <p>Conditions, routing, arithmetic, dedupe. If the answer is knowable from the inputs, an LLM is an expensive way to guess it.</p>
+      </div>
+      <div class="card zero">
+        <span class="k">✅ Deterministic · $0 tokens</span>
+        <h3>Scraping &amp; extraction</h3>
+        <p>Fetching structured pages on a schedule. Predictable shape, predictable cost — a request, not a reasoning step.</p>
+      </div>
+      <div class="card zero">
+        <span class="k">✅ Deterministic · $0 tokens</span>
+        <h3>Templates</h3>
+        <p>Consistent baseline output. Fill the slots with rules; never regenerate a paragraph that never changes.</p>
+      </div>
+      <div class="card burn">
+        <span class="k">🔥 Generative · per-token</span>
+        <h3>Reasoning</h3>
+        <p>Reserved for complex decisions — genuinely ambiguous input, judgement calls, novel situations. This is what you are actually buying.</p>
+      </div>
+      <div class="card burn">
+        <span class="k">🔥 Generative · per-token</span>
+        <h3>Synthesis</h3>
+        <p>Dynamic prospect qualification, summarising an unruly thread. High value, high variance — cap it.</p>
+      </div>
+      <div class="card burn">
+        <span class="k">🔥 Generative · per-token</span>
+        <h3>Guardrails</h3>
+        <p>Strict context-window limits. The cheapest generative call is the one whose input you trimmed before sending it.</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top:44px">🧮 What one agent costs to run</h2>
+    <p class="sub">Fill in your own rates — the arithmetic is the reusable part, not the number. Cost per call = input tokens × input rate + output tokens × output rate. Multiply by calls per day. Multiply by agents.</p>
+
+    <table>
+      <thead><tr><th>Line item</th><th>Formula</th><th>Watch out for</th></tr></thead>
+      <tbody>
+        <tr><td>Per call</td><td class="num">(in × in_rate) + (out × out_rate)</td><td>Output tokens usually cost 3–4× input.</td></tr>
+        <tr><td>Per agent / day</td><td class="num">call_cost × calls_per_day</td><td>Retries and tool loops silently double this.</td></tr>
+        <tr><td>Context tax</td><td class="num">call_cost × context_growth</td><td>History resent every turn is the quiet multiplier.</td></tr>
+        <tr><td>Fleet / month</td><td class="num">agent_day × agents × 30</td><td>50 agents × $0.05/day ≈ $75/month. That is the curve.</td></tr>
+        <tr class="hl"><td>Unreviewed spend</td><td class="num">billable_action × unreviewed_ratio</td><td>The <span class="swatch blued"></span>blue dot — money already spent, nobody has looked.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <b>⚠️ The trap:</b> per-call pricing feels like nothing. <code>$0.002</code> a call is invisible. Fifty agents making 400 calls a day is 20,000 calls a day — and nobody ever approves a 20,000-call-a-day decision, because it never presents itself as one.
+    </div>
+  </div>
+</section>
+
+<section id="columnB">
+  <div class="wrap">
+    <p class="eyebrow">🎬 Column B · One-off production</p>
+    <h2>What it cost to make the video</h2>
+    <p class="sub">The full production line — script, design, narration, music, captions, edit, export and hosting — itemised. This is a 2 min 10 s, 1920×1080, captioned and scored deliverable.</p>
+
+    <table>
+      <thead><tr><th>Stage</th><th>Tool</th><th>Cost basis</th></tr></thead>
+      <tbody>
+        <tr class="free"><td>🧠 Script</td><td>Gemini</td><td>Free tier — the conversation itself is the scriptwriting step.</td></tr>
+        <tr><td>🎨 Design</td><td>Google Slides</td><td>Included in the Workspace seat.</td></tr>
+        <tr><td>🎬 Assembly</td><td>Google Vids</td><td>Included in the Workspace seat — no separate purchase.</td></tr>
+        <tr class="free"><td>🎙️ Voiceover</td><td>Vids AI narrator</td><td>Generated in-app. No voice actor, no studio.</td></tr>
+        <tr><td>🎵 Music bed</td><td>Vids stock library</td><td>Licensed bed ("Technology Innovation Background", credited to Shutterstock) — covered by the seat, not bought separately.</td></tr>
+        <tr class="free"><td>💬 Captions</td><td>Vids captions</td><td>Toggle. Legible on mute at zero marginal cost.</td></tr>
+        <tr class="free"><td>✂️ Editing</td><td>Vids scene timeline</td><td><b>0 timeline hours.</b> Ten scenes, cut the way you'd reorder slides.</td></tr>
+        <tr class="free"><td>📦 Export</td><td>Vids → MP4</td><td>H.264, 1920×1080, 30 fps — one file, committed to the repo.</td></tr>
+        <tr class="free"><td>🌐 Hosting</td><td>GitHub Pages</td><td>Free. Serves the page and the MP4, byte-range requests included.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:44px">💳 What a Workspace seat actually costs</h2>
+    <p class="sub">Google Vids is not a standalone product — it ships inside paid Google Workspace. That is the entire tooling cost of this pipeline, and it is a price you can look up rather than estimate.</p>
+
+    <div class="grid">
+      <div class="card">
+        <span class="k">📌 Verified anchor</span>
+        <h3>£11.80 / user / month</h3>
+        <p>UK <b>list</b> price for the entry business tier, excluding tax, at time of capture. A <b>50% promotional rate (£5.90)</b> was running for the first three months.</p>
+      </div>
+      <div class="card">
+        <span class="k">🔍 Must be checked</span>
+        <h3>Varies by region &amp; promo</h3>
+        <p>Per-user pricing, annual-vs-monthly discount, currency and promotional terms all change the number. Confirm on the <a href="https://workspace.google.com/pricing">live pricing page</a> before quoting it.</p>
+      </div>
+      <div class="card">
+        <span class="k">🆓 Free alternative</span>
+        <h3>Gemini alone costs nothing</h3>
+        <p>The script-writing step is free. If you have Slides and any editor, you can reproduce everything except the in-app narration, music bed and scene timeline.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>🧾 How to read this:</b> the seat is the only line with a number attached, and you may already be paying it. Everything else in the production column is either free (Gemini, GitHub Pages) or bundled (Slides, Vids narrators and stock) — so the marginal cost of this specific video is <b>≈ £0</b> in cash. The real spend was attention.
+    </div>
+
+    <div class="quote r">💸 Do not spend API dollars on unreviewed output.</div>
+  </div>
+</section>
+
+<section id="ledger">
+  <div class="wrap">
+    <p class="eyebrow">📊 Side by side</p>
+    <h2>The two columns, one table</h2>
+    <p class="sub">If Column A ever reaches ten times Column B, you have built a machine whose explanation costs less than its appetite.</p>
+    <table>
+      <thead><tr><th>Dimension</th><th>💸 Column A — the fleet</th><th>🎬 Column B — the video</th></tr></thead>
+      <tbody>
+        <tr><td>Nature</td><td>Recurring, activity-driven</td><td>One-off, fixed</td></tr>
+        <tr><td>Unit</td><td>Per token, per call, per agent</td><td>Per seat, per month</td></tr>
+        <tr><td>Growth</td><td>Compounds — 50 agents, 20k calls/day</td><td>Flat — does not scale with views</td></tr>
+        <tr><td>Who approves it</td><td>Nobody, explicitly. It arrives.</td><td>A subscription you chose.</td></tr>
+        <tr class="free"><td>Cheapest lever</td><td>Run deterministic work on rules → <span class="green">$0</span></td><td>Reuse the deck → <span class="green">$0</span></td></tr>
+        <tr class="hl"><td>Worst case</td><td>Runaway spend on unreviewed output</td><td>An afternoon of attention</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="guardrails">
+  <div class="wrap">
+    <p class="eyebrow">🚦 Control</p>
+    <h2>Guardrails that hold the ceiling</h2>
+    <p class="sub">Cost governance is not frugality — it is the reason the fleet is allowed to run unsupervised. Six levers, in the order they save the most money.</p>
+
+    <ul class="clean">
+      <li><b>🧮 Route first, prompt second.</b> Classify the task as deterministic or generative <em>before</em> a model sees it. Every task reclassified as deterministic is a permanent 100% saving on that path.</li>
+      <li><b>✂️ Cap the context window.</b> Strict limits per call. Resent history is the silent multiplier — trim it and you cut every downstream call.</li>
+      <li><b>🪜 Model laddering.</b> Cheapest model that clears the bar for the task; escalate only on failure. Reasoning models are for reasoning, not for formatting.</li>
+      <li><b>♻️ Cache and dedupe.</b> Daily scrapes repeat. Identical input, identical output — serve it from cache instead of buying it twice.</li>
+      <li><b>🔁 Budget on retries.</b> A tool loop that fails three times costs three times. Cap iterations per agent per run, hard.</li>
+      <li><b>🚦 The human gate.</b> One approval step before any billable action leaves the building. The cheapest agent action is the one a human refuses.</li>
+    </ul>
+
+    <h2 style="margin-top:44px">🧾 Budget sheet template</h2>
+    <p class="sub">Copy this into your own tracker. The point is not the figures — it is that every ceiling has an owner and a breach behaviour.</p>
+    <table>
+      <thead><tr><th>Control</th><th>Ceiling</th><th>On breach</th></tr></thead>
+      <tbody>
+        <tr><td>Per-call tokens</td><td class="num">Set a hard context cap</td><td>Truncate, then retry once.</td></tr>
+        <tr><td>Per-agent / day</td><td class="num">Set a call count</td><td>Halt the agent, raise a task.</td></tr>
+        <tr><td>Per-fleet / month</td><td class="num">Set a dollar budget</td><td>Degrade to deterministic paths only.</td></tr>
+        <tr class="hl"><td>Unreviewed actions</td><td class="num">Zero tolerance</td><td><span class="swatch blued"></span>Blue dot blocks downstream execution.</td></tr>
+        <tr class="hl"><td>Pink status age</td><td class="num">Time-boxed approval</td><td><span class="swatch pinkd"></span>Escalate to a named human.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap">
+    <p class="eyebrow">🔒 Provenance</p>
+    <h2>What is verified, what is not</h2>
+    <p class="sub">A cost page that hides its own uncertainties is a cost page you should not act on. 📋</p>
+    <ul class="clean">
+      <li><b class="green">✅ Verified from source</b> — Google Vids appears in Google Workspace's published tier feature list, and the £11.80 list / £5.90 promotional per-user UK figure was read directly from the live pricing page (excluding tax).</li>
+      <li><b class="green">✅ Verified from this project</b> — the video exists at 1920×1080, 30 fps, 2 min 10 s, 3.8 MB, H.264 + AAC stereo, ten scenes, and is served from GitHub Pages with byte-range requests (HTTP 206).</li>
+      <li><b class="amber">⚠️ Quoted from the film, not independently audited</b> — the $20 → $100+ trajectory is the figure discussed in the video. It is an observed account, not a measured dataset.</li>
+      <li><b class="red">❌ Deliberately not estimated</b> — no per-token model prices are published here. Rates change per model, per provider and per region, and a stale rate on a cost page is worse than a blank cell. Use the formulas in Column A with your own current rates.</li>
+      <li><b class="amber">⚠️ Time is unpriced</b> — the production column is free in cash, not in attention. The script conversation, the deck styling and the scene pass are real hours; they are simply not invoiced.</li>
+    </ul>
+    <div class="quote">💰 A cost page earns its place by naming the column it did <em>not</em> measure.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p style="color:var(--grey)"><strong style="color:var(--white)">🚢 Deploy Bulk. Govern Tight.</strong><br>Scale agent creation through automated dispatch while keeping API costs and quality strictly verified.</p>
+    <div class="row">
+      <a href="index.html">🎬 The video page</a>
+      <a href="https://github.com/rifaterdemsahin/slides-to-video">📦 Repository</a>
+      <a href="https://docs.google.com/videos/d/1AWB8ILIC7G9ZK4cJNznjJeK7Tn_sBF7gsOlEwxm1IGs/edit">📹 Google Vids document</a>
+      <a href="https://workspace.google.com/pricing">💳 Google Workspace pricing</a>
+    </div>
+    <p style="margin-top:22px;font-size:12px">Rifat Erdem Sahin · built with Gemini + Google Vids</p>
+  </div>
+</footer>
+
+</body>
+</html>
