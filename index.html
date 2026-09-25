@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scaling AI Agents: Chief of Staff &amp; Cost Governance — Google Vids</title>
+<meta name="description" content="A 10-scene video document on bulk agent provisioning via a Chief of Staff agent, built in Google Vids from a Gemini conversation. Plus the one-page pipeline: Gemini → Google Vids → export → Skool.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230B1220'/><rect x='6' y='18' width='13' height='4' fill='%233B82F6'/><rect x='21' y='18' width='5' height='4' fill='%23EF4444'/></svg>">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#111A2C; --panel2:#0E1626;
+    --line:rgba(255,255,255,.09);
+    --cyan:#4FC3D9; --blue:#3B82F6; --red:#EF4444;
+    --white:#FFFFFF; --grey:#B0B6C0; --dim:#78808F;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--grey);
+    font-family:var(--sans); font-size:16px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:0 24px}
+  a{color:var(--cyan); text-decoration:none; border-bottom:1px solid rgba(79,195,217,.3)}
+  a:hover{border-bottom-color:var(--cyan)}
+  .eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--cyan); margin:0 0 18px;
+  }
+  .accent{display:flex; gap:5px; margin-top:26px}
+  .accent i{display:block; height:4px; border-radius:1px}
+  .accent i.b{width:52px; background:var(--blue)}
+  .accent i.r{width:20px; background:var(--red)}
+  header{padding:88px 0 64px; border-bottom:1px solid var(--line)}
+  h1{
+    font-size:clamp(34px,5.6vw,56px); line-height:1.06; letter-spacing:-.025em;
+    color:var(--white); font-weight:800; margin:0 0 22px;
+  }
+  header p.lede{font-size:clamp(16px,2vw,19px); color:var(--grey); max-width:62ch; margin:0}
+  .meta{
+    display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:34px;
+    font-family:var(--mono); font-size:12px; color:var(--dim); letter-spacing:.04em;
+  }
+  .meta b{color:var(--grey); font-weight:500}
+  section{padding:64px 0; border-bottom:1px solid var(--line)}
+  h2{
+    font-size:clamp(22px,3vw,30px); color:var(--white); font-weight:700;
+    letter-spacing:-.015em; margin:0 0 12px; line-height:1.2;
+  }
+  h2 .n{font-family:var(--mono); font-size:13px; color:var(--cyan); font-weight:400; margin-right:12px; letter-spacing:.1em}
+  h3{color:var(--white); font-size:16px; font-weight:650; margin:0 0 8px}
+  p{margin:0 0 16px}
+  .sub{color:var(--dim); font-size:15px; max-width:66ch; margin-bottom:28px}
+  video{width:100%; display:block; background:#000; border-radius:10px; border:1px solid var(--line)}
+  .vidwrap{margin-top:8px}
+  .vidnote{font-family:var(--mono); font-size:11.5px; color:var(--dim); margin-top:12px; letter-spacing:.03em}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px 22px}
+  .card h3{font-size:15px; margin-bottom:6px}
+  .card p{font-size:14px; margin:0; color:var(--grey)}
+  .card .k{font-family:var(--mono); font-size:11px; color:var(--cyan); letter-spacing:.14em; text-transform:uppercase; display:block; margin-bottom:10px}
+  /* pipeline */
+  .pipe{display:grid; gap:0; margin-top:8px; counter-reset:step}
+  .pstep{display:grid; grid-template-columns:44px 1fr; gap:20px; padding:26px 0; border-top:1px solid var(--line)}
+  .pstep:first-child{border-top:0}
+  .pstep .num{
+    counter-increment:step; font-family:var(--mono); font-size:12px; color:var(--cyan);
+    letter-spacing:.08em; padding-top:3px;
+  }
+  .pstep .num::before{content:"0" counter(step)}
+  .pstep h3{margin-bottom:6px}
+  .pstep p{margin-bottom:10px; font-size:14.5px}
+  .pstep p:last-child{margin-bottom:0}
+  code,kbd{
+    font-family:var(--mono); font-size:12.5px; background:rgba(79,195,217,.1);
+    color:#9FE3F1; padding:2px 6px; border-radius:4px; border:1px solid rgba(79,195,217,.18);
+  }
+  .quote{
+    border-left:3px solid var(--blue); padding:4px 0 4px 20px; margin:26px 0;
+    color:var(--white); font-size:17px; font-weight:500;
+  }
+  .quote.r{border-left-color:var(--red)}
+  ul.clean{list-style:none; padding:0; margin:0}
+  ul.clean li{padding-left:20px; position:relative; margin-bottom:11px; font-size:14.5px}
+  ul.clean li::before{
+    content:""; position:absolute; left:0; top:.72em; width:7px; height:2px; background:var(--cyan);
+  }
+  ul.clean li b{color:var(--white); font-weight:600}
+  .swatch{display:inline-block; width:11px; height:11px; border-radius:50%; vertical-align:-1px; margin-right:6px}
+  .pinkd{background:#EC4899}
+  .blued{background:var(--blue)}
+  table{width:100%; border-collapse:collapse; margin-top:6px; font-size:14px}
+  th,td{text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan); font-weight:500}
+  td:first-child{color:var(--white); font-weight:600; white-space:nowrap}
+  .feat{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin-top:20px}
+  .feat span{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--grey);
+    background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:8px 12px;
+  }
+  .feat span.hot{color:var(--cyan); border-color:rgba(79,195,217,.3)}
+  footer{padding:56px 0 80px; color:var(--dim); font-size:13px}
+  footer .row{display:flex; flex-wrap:wrap; gap:8px 22px; font-family:var(--mono); font-size:12px}
+  .anchor{display:flex; flex-wrap:wrap; gap:8px 24px; font-family:var(--mono); font-size:12px; margin-top:30px}
+  @media(max-width:600px){
+    header{padding:64px 0 48px}
+    .pstep{grid-template-columns:30px 1fr; gap:12px}
+    td:first-child{white-space:normal}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">System Architecture &amp; Operations</p>
+    <h1>Scaling Autonomous Agents</h1>
+    <p class="lede">Bulk orchestration via Chief of Staff and cost-governed human oversight.</p>
+    <div class="accent"><i class="b"></i><i class="r"></i></div>
+    <div class="meta">
+      <span><b>Runtime</b> 02:10.8</span>
+      <span><b>Scenes</b> 10</span>
+      <span><b>Output</b> 1920×1080 · 30 fps</span>
+      <span><b>Built in</b> Google Vids</span>
+    </div>
+    <div class="anchor">
+      <a href="#video">Watch</a>
+      <a href="#pipeline">How it was made</a>
+      <a href="#scenes">Scenes</a>
+      <a href="#vids">Google Vids features</a>
+      <a href="#skool">Publish to Skool</a>
+    </div>
+  </div>
+</header>
+
+<section id="video">
+  <div class="wrap">
+    <p class="eyebrow">Output</p>
+    <h2>The exported video</h2>
+    <p class="sub">Exported straight out of Google Vids as MP4 (H.264 + AAC stereo, 44.1 kHz) — the same file committed to this repository.</p>
+    <div class="vidwrap">
+      <video controls preload="metadata" playsinline poster="">
+        <source src="scaling-ai-agents-chief-of-staff-and-cost-governance.mp4" type="video/mp4">
+        Your browser does not support embedded video. <a href="scaling-ai-agents-chief-of-staff-and-cost-governance.mp4">Download the MP4</a>.
+      </video>
+    </div>
+    <p class="vidnote">3.8 MB · 2 min 10 s · narrated, captioned, scored</p>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="wrap">
+    <p class="eyebrow">One Page</p>
+    <h2>Gemini → Google Vids → export → Skool</h2>
+    <p class="sub">The whole production line, in four moves. No camera, no editor, no timeline software.</p>
+
+    <div class="pipe">
+
+      <div class="pstep">
+        <div class="num"></div>
+        <div>
+          <h3>Create the script with Gemini</h3>
+          <p>Talk. Don't type an outline — <strong>dictate the raw brain-dump</strong> to Gemini as if you were explaining it to a colleague. Mention the real numbers, the real objections, the real worry.</p>
+          <p>Then ask one line: <code>rewrite this in a presentation form</code>. Gemini converts the rambling transcript into slide-shaped structure — a title, a subtitle, and 3–4 bolded points per slide.</p>
+          <p>The source conversation for this video is <a href="https://gemini.google.com/share/d/1AXSsTFxFefXaasYa4QUk_aoN_-uHKR_5">shared here</a> — note the raw opening ("<em>…I'm going to create them in bulk in one go instead of being one agent at a time, I will create five agents all at the same time because I have around 30 40 50 agents…</em>") sitting right next to the cleaned-up slide script Gemini returned.</p>
+        </div>
+      </div>
+
+      <div class="pstep">
+        <div class="num"></div>
+        <div>
+          <h3>Design the deck — Google Slides, 16:9, dark theme</h3>
+          <p>Paste the slide script into a Google Slides deck set to <strong>16:9 widescreen</strong> — that aspect ratio becomes your video frame, so it has to be right at this step.</p>
+          <p>Keep one visual language across all slides: a monospace all-caps <em>eyebrow</em> label naming the section, a heavy white title, a grey one-line deck, and a small two-bar accent (blue + red) as the sign-off. That restraint is what makes 10 slides read as one film.</p>
+          <p>Source deck: <a href="https://docs.google.com/presentation/d/1LxohuJdkUOFROYpKfol89acD-YIetO_Xwq0KiUtpcFo/edit">Scaling AI Agents — Google Slides</a></p>
+        </div>
+      </div>
+
+      <div class="pstep">
+        <div class="num"></div>
+        <div>
+          <h3>Assemble the video in Google Vids</h3>
+          <p>In Google Vids, <strong>import the Slides deck</strong> — each slide drops onto the scene timeline as a scene with its own timing. Vids keeps the deck live: edits to the source slides flow back into the scenes.</p>
+          <p>Then layer on the generated media: an <strong>AI voiceover</strong> reads the narrator script per scene, a licensed <strong>music bed</strong> runs underneath, and auto-<strong>captions</strong> burn the narration in. Vids' <em>Improve sound quality → Balance sound</em> levels speech against music in one click.</p>
+          <p>Everything sits on a scene timeline with a playhead — <code>00:00.0 / 02:10.8</code> — so you fix the video the same way you edit a deck, not the way you edit footage.</p>
+        </div>
+      </div>
+
+      <div class="pstep">
+        <div class="num"></div>
+        <div>
+          <h3>Export, then publish to Skool</h3>
+          <p>Export <strong>MP4</strong>, commit it to the repo, and enable GitHub Pages on the repo root so this page serves it. Then paste the same content into Skool.</p>
+          <p>Skool stores classroom lessons as <strong>markdown</strong> — the lesson URL carries it as <code>?md=…</code>. So the article you are reading doubles as the lesson body: admin tools → classroom → pick the course → <em>Add lesson</em> → paste → attach the MP4.</p>
+          <p>See <a href="#skool">Publish to Skool</a> for the exact destination and the copy-paste block.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="scenes">
+  <div class="wrap">
+    <p class="eyebrow">Storyboard</p>
+    <h2>Ten scenes, one argument</h2>
+    <p class="sub">Every scene carries a numbered eyebrow, a claim, and the evidence under it. Read top to bottom, it is a single cost-governed pitch.</p>
+
+    <table>
+      <thead><tr><th>Scene</th><th>Content</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>01 · Title</td>
+          <td><strong>Scaling Autonomous Agents.</strong> Bulk orchestration via Chief of Staff and cost-governed human oversight.</td>
+        </tr>
+        <tr>
+          <td>02 · The Problem</td>
+          <td><strong>The Manual Bottleneck.</strong> 50+ target agents across active business pipelines. <em>Manual Provisioning</em> — building agents individually stalls operational momentum. <em>Configuration Drift</em> — fragmented data produces inconsistent prompt instructions. <em>Excess Overhead</em> — human setup time exceeds system runtime execution.</td>
+        </tr>
+        <tr>
+          <td>03 · Central Dispatch</td>
+          <td><strong>The Chief of Staff Model.</strong> One command launches the complete functional pipeline. <em>Single Payload</em> — define agent specifications and system data once; the manager handles configuration parsing automatically. <em>Parallel</em> — the Chief of Staff deploys worker agents simultaneously instead of sequential setup steps.</td>
+        </tr>
+        <tr>
+          <td>04 · Bulk Pipeline</td>
+          <td><strong>Five Agents in One Shot.</strong> All specialists provisioned in parallel through a unified spec — <em>Prospecting</em> daily lead harvesting, <em>Outreach</em> initial contact dispatch, <em>Engagement</em> contextual dialog handling, <em>Human Gate</em> review clearance checkpoint.</td>
+        </tr>
+        <tr>
+          <td>05 · Financial Exposure</td>
+          <td><strong>The API Cost Curve.</strong> $20 → $100+. The bill does not grow linearly with value delivered.</td>
+        </tr>
+        <tr>
+          <td>06 · Cost Governance</td>
+          <td><strong>Controlling Token Burn.</strong> <em>Deterministic</em> — rule logic (zero token consumption), scraping (predictable data extraction), templates (consistent baseline outputs). <em>Generative</em> — reasoning (reserved for complex decisions), synthesis (dynamic prospect qualification), guardrails (strict context window limits).</td>
+        </tr>
+        <tr>
+          <td>07 · Telemetry</td>
+          <td><strong>Live Dashboard Signals.</strong> Visual cues guarantee immediate awareness of system state — bulk bot creation active, unreviewed task awaiting approval.</td>
+        </tr>
+        <tr>
+          <td>08 · Accountability</td>
+          <td><strong>Human-in-the-Loop Control.</strong> A clear dot proves human verification before downstream execution. <em>Review Required</em> — worker completed a billable action. <em>Click Verification</em> — operator inspects and validates output. <em>State Transition</em> — blue dot clears upon review.</td>
+        </tr>
+        <tr>
+          <td>09 · Field Execution</td>
+          <td><strong>Prospecting in Action.</strong> Scrapes contracting leads daily with human verification. <em>Phase 01</em> automate setup — Chief of Staff provisions the worker. <em>Phase 02</em> scan leads — daily scrapes on Titan and Gmail. <em>Phase 03</em> clear alert — human inspects blue dot status.</td>
+        </tr>
+        <tr>
+          <td>10 · Summary</td>
+          <td><strong>Deploy Bulk. Govern Tight.</strong> Scale agent creation through automated dispatch while keeping API costs and quality strictly verified.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:56px">The two rules that carry the film</h2>
+    <div class="quote">Do not spend API dollars on predictable logic.</div>
+    <div class="quote r">Do not spend API dollars on unreviewed output.</div>
+    <p class="sub" style="margin-top:26px">The first is cost governance — deterministic work runs on rules, generative calls are reserved for genuine reasoning. The second is accountability — the dashboard's <span class="swatch blued"></span><strong>blue dot</strong> means a worker has spent money on a billable action nobody has checked yet, and a <span class="swatch pinkd"></span><strong>pink</strong> status means a task is waiting on approval. Both are the same discipline: the fleet is allowed to run unsupervised, but not unverified.</p>
+  </div>
+</section>
+
+<section id="vids">
+  <div class="wrap">
+    <p class="eyebrow">Toolchain</p>
+    <h2>What Google Vids actually is</h2>
+    <p class="sub">Google's new video <em>document</em> type — a Workspace file like a Doc or a Sheet, except its output is a video. It lives at <code>docs.google.com/videos/&lt;id&gt;</code>, not in Drive's video viewer. The scene timeline is the document body; the media tray is the toolbar.</p>
+
+    <div class="feat">
+      <span class="hot">AI video</span>
+      <span class="hot">Reimagine your video</span>
+      <span>Avatar</span>
+      <span>Voiceover</span>
+      <span>Music</span>
+      <span>Image</span>
+      <span>Record</span>
+      <span>Uploads</span>
+      <span>Stock</span>
+      <span>Captions</span>
+      <span>Text</span>
+      <span>Templates</span>
+      <span>Shapes</span>
+      <span>Show timing</span>
+      <span>Balance sound</span>
+    </div>
+
+    <div class="grid" style="margin-top:30px">
+      <div class="card">
+        <span class="k">Deck-native</span>
+        <h3>Slides become scenes</h3>
+        <p>Import an existing Google Slides deck and each slide lands as a timed scene. You author in Slides, you render in Vids.</p>
+      </div>
+      <div class="card">
+        <span class="k">Generated voice</span>
+        <h3>Narrator script per scene</h3>
+        <p>Each scene holds its own narrator line — the timing panel in this project lists ten of them, one per scene, alongside the music track name.</p>
+      </div>
+      <div class="card">
+        <span class="k">Audio suite</span>
+        <h3>Music + sound balance</h3>
+        <p>A licensed stock bed ("Technology Innovation Background", via Shutterstock) under an "Improve sound quality / Balance sound" pass that lifts speech above the music.</p>
+      </div>
+      <div class="card">
+        <span class="k">Always captioned</span>
+        <h3>Captions on by default</h3>
+        <p>Burn-in captions are a toggle in the same tray as Text and Shapes — which is why the whole film is legible on mute.</p>
+      </div>
+      <div class="card">
+        <span class="k">Prompt editing</span>
+        <h3>Reimagine your video</h3>
+        <p>"Describe any changes that you want to make, from a tiny tweak to a total transformation" — Gemini edits the cut from a sentence.</p>
+      </div>
+      <div class="card">
+        <span class="k">Interchange</span>
+        <h3>Exports real MP4</h3>
+        <p>H.264, 1920×1080, 30 fps, AAC stereo — a normal file you can commit, self-host and publish anywhere.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skool">
+  <div class="wrap">
+    <p class="eyebrow">Distribution</p>
+    <h2>Adding this to Skool</h2>
+    <p class="sub">Destination: the <strong>Delivery Pilot</strong> community classroom (<code>skool.com/delivery-pilot-8938</code>), which runs a numbered course ladder — Step 0 Certification through Step 9 AGI. This content belongs with <strong>Step 6 Agents</strong>, where the Chief of Staff / bulk-provisioning material sits.</p>
+
+    <ul class="clean">
+      <li><b>Two surfaces, use both.</b> A <b>classroom lesson</b> is the durable reference — long-form, markdown, attachable media, permanent URL. A <b>community post</b> is the announcement that makes people watch it today. The video goes in both.</li>
+      <li><b>Lessons are markdown.</b> The lesson URL carries the body as <code>?md=&lt;hash&gt;</code>, so anything you can write in markdown pastes in cleanly: headings, bold, bullets, links, images, code.</li>
+      <li><b>Where to put it.</b> Admin tools → Classroom → the course containing Step 6 → <em>Add lesson</em> → title it <em>"Scaling AI Agents — Bulk Provisioning via Chief of Staff"</em> → paste the <a href="#scenes">storyboard table</a> as the body → attach the MP4.</li>
+      <li><b>What to keep from this page.</b> The ten-scene table and the two rules at the end are the lesson. The pipeline section above is optional colour — drop it if the lesson needs to stay short.</li>
+      <li><b>Lead with the constraint, not the capability.</b> The line that makes this land is the cost curve: <em>$20 → $100+</em>. Members have already felt that bill. Open with it, then show the deterministic/generative split as the fix.</li>
+      <li><b>Keep the two-bar motif.</b> Blue + red is the visual signature across all ten scenes. Reuse it in any Skool cover image so the lesson looks like part of the same series.</li>
+    </ul>
+
+    <p style="margin-top:30px"><strong>Order of operations:</strong> publish the GitHub Pages URL first, then paste <em>that</em> URL into Skool. The lesson body stays short and the canonical version lives at one stable link you can update forever without touching the lesson again.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p style="color:var(--grey)"><strong style="color:var(--white)">Deploy Bulk. Govern Tight.</strong><br>Scale agent creation through automated dispatch while keeping API costs and quality strictly verified.</p>
+    <div class="row">
+      <a href="https://github.com/rifaterdemsahin/slides-to-video">Repository</a>
+      <a href="https://docs.google.com/videos/d/1AWB8ILIC7G9ZK4cJNznjJeK7Tn_sBF7gsOlEwxm1IGs/edit">Google Vids document</a>
+      <a href="https://docs.google.com/presentation/d/1LxohuJdkUOFROYpKfol89acD-YIetO_Xwq0KiUtpcFo/edit">Source Slides deck</a>
+      <a href="https://gemini.google.com/share/d/1AXSsTFxFefXaasYa4QUk_aoN_-uHKR_5">Gemini source conversation</a>
+    </div>
+    <p style="margin-top:22px; font-size:12px">Rifat Erdem Sahin · built with Gemini + Google Vids</p>
+  </div>
+</footer>
+
+</body>
+</html>
