@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>📹 How to Use Google Vids — Step-by-Step + Watch List</title>
+<meta name="description" content="A step-by-step guide to Google Vids (Google's video document type) grounded in the real UI, plus a verified watch list of YouTube tutorials on Google Vids, multi-agent orchestration and AI token economics.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230B1220'/><text y='24' x='5' font-size='22'>📹</text></svg>">
+<style>
+  :root{
+    --bg:#0B1220; --panel:#111A2C; --panel2:#0E1626;
+    --line:rgba(255,255,255,.09);
+    --cyan:#4FC3D9; --blue:#3B82F6; --red:#EF4444;
+    --green:#34D399; --amber:#FBBF24; --pink:#EC4899;
+    --white:#FFFFFF; --grey:#B0B6C0; --dim:#78808F;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--grey);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(79,195,217,.3)}
+  a:hover{border-bottom-color:var(--cyan)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin:0 0 18px}
+  .accent{display:flex;gap:5px;margin-top:26px}
+  .accent i{display:block;height:4px;border-radius:1px}
+  .accent i.b{width:52px;background:var(--blue)}
+  .accent i.r{width:20px;background:var(--red)}
+  header{padding:88px 0 64px;border-bottom:1px solid var(--line)}
+  h1{font-size:clamp(32px,5.4vw,54px);line-height:1.07;letter-spacing:-.025em;color:var(--white);font-weight:800;margin:0 0 22px}
+  header p.lede{font-size:clamp(16px,2vw,19px);max-width:64ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:34px;font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.04em}
+  .meta b{color:var(--grey);font-weight:500}
+  .anchor{display:flex;flex-wrap:wrap;gap:8px 24px;font-family:var(--mono);font-size:12px;margin-top:30px}
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:clamp(22px,3vw,30px);color:var(--white);font-weight:700;letter-spacing:-.015em;margin:0 0 12px;line-height:1.22}
+  h3{color:var(--white);font-size:16px;font-weight:650;margin:0 0 8px}
+  p{margin:0 0 16px}
+  .sub{color:var(--dim);font-size:15px;max-width:68ch;margin-bottom:28px}
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{padding-left:24px;position:relative;margin-bottom:11px;font-size:14.5px}
+  ul.clean li::before{content:"▸";position:absolute;left:2px;top:-1px;color:var(--cyan);font-size:12px}
+  ul.clean li b{color:var(--white);font-weight:600}
+  .steps{counter-reset:st;margin-top:8px}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:20px;padding:24px 0;border-top:1px solid var(--line)}
+  .step:first-child{border-top:0}
+  .step .num{counter-increment:st;font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.08em;padding-top:3px}
+  .step .num::before{content:counter(st,decimal-leading-zero)}
+  .step h3{margin-bottom:6px}
+  .step p{margin-bottom:10px;font-size:14.5px}
+  .step p:last-child{margin-bottom:0}
+  code,kbd{font-family:var(--mono);font-size:12.5px;background:rgba(79,195,217,.1);color:#9FE3F1;padding:2px 6px;border-radius:4px;border:1px solid rgba(79,195,217,.18)}
+  .tray{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:20px 0 0}
+  .tray span{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--grey);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 11px}
+  .tray span.hot{color:var(--cyan);border-color:rgba(79,195,217,.3)}
+  .note{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:16px 20px;font-size:14px;margin:24px 0}
+  .note b{color:var(--white)}
+  .note.g{border-left-color:var(--green)}
+  /* watch list */
+  .vgroup{margin-top:44px}
+  .vgroup:first-of-type{margin-top:8px}
+  .vgh{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .vgh h3{font-size:18px;margin:0}
+  .vgh .tag{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+  .vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .vid{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .facade{position:relative;display:block;aspect-ratio:16/9;background:#000 center/cover no-repeat;border:0;cursor:pointer;padding:0;width:100%}
+  .facade::after{
+    content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:56px;height:56px;border-radius:50%;
+    background:rgba(11,18,32,.72) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center/26px no-repeat;
+    border:1px solid rgba(255,255,255,.35);transition:transform .15s ease;
+  }
+  .facade:hover::after{transform:translate(-50%,-50%) scale(1.08)}
+  .facade iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .vidmeta{padding:14px 16px}
+  .vidmeta .t{color:var(--white);font-size:14.5px;font-weight:600;line-height:1.35;display:block;margin-bottom:5px;border:0}
+  .vidmeta .c{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.05em;display:flex;flex-wrap:wrap;gap:4px 12px}
+  .badge{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:4px;border:1px solid}
+  .badge.off{color:var(--green);border-color:rgba(52,211,153,.4)}
+  .badge.core{color:var(--cyan);border-color:rgba(79,195,217,.4)}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:500}
+  td:first-child{color:var(--white);font-weight:600}
+  .green{color:var(--green)} .red{color:var(--red)} .amber{color:var(--amber)}
+  footer{padding:56px 0 80px;color:var(--dim);font-size:13px}
+  footer .row{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:12px}
+  @media(max-width:600px){header{padding:64px 0 48px}.step{grid-template-columns:30px 1fr;gap:12px}td:first-child{white-space:normal}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">📹 Toolchain Guide · System Architecture &amp; Operations</p>
+    <h1>📹 How to Use Google Vids</h1>
+    <p class="lede">🎬 Google's video <em>document</em> type — a Workspace file whose body is a scene timeline and whose output is a finished video. Step-by-step, grounded in the real UI. Plus a verified watch list. 🔗</p>
+    <div class="accent"><i class="b"></i><i class="r"></i></div>
+    <div class="meta">
+      <span><b>Where it lives</b> docs.google.com/videos/&lt;id&gt;</span>
+      <span><b>Requires</b> paid Workspace</span>
+      <span><b>Exports</b> MP4</span>
+      <span><b>Timeline hours</b> 0</span>
+    </div>
+    <div class="anchor">
+      <a href="index.html">🎬 The video page</a>
+      <a href="costs.html">💰 The Cost Ledger</a>
+      <a href="#access">🔑 Access</a>
+      <a href="#steps">🧭 Step-by-step</a>
+      <a href="#ui">🧰 The real UI</a>
+      <a href="#watch">🎥 Watch list</a>
+      <a href="#gotchas">⚠️ Gotchas</a>
+    </div>
+  </div>
+</header>
+
+<section id="what">
+  <div class="wrap">
+    <p class="eyebrow">🧠 Mental model first</p>
+    <h2>🧠 It is a document, not an editor</h2>
+    <p class="sub">This is the single idea that makes Google Vids click. It is not a video editor that happens to live in the cloud — it is a <em>structured document</em>, like a Doc or a Sheet, in which every block happens to be a scene in a video.</p>
+    <ul class="clean">
+      <li><b>📍 It has its own URL type.</b> Vids files live at <code>docs.google.com/videos/&lt;id&gt;</code>. They are not opened from Drive's video player, and they are not Slides files.</li>
+      <li><b>🎞️ The scene timeline is the document body.</b> Where a Doc has paragraphs, Vids has scenes. Reordering scenes is reordering paragraphs — that is why the editing feels nothing like Premiere or Resolve.</li>
+      <li><b>🧰 The media tray is the toolbar.</b> Where a Doc has bold and italics, Vids has voiceover, music, stock footage and captions.</li>
+      <li><b>📤 The output is a real file.</b> Export produces a normal MP4 — H.264, 1920×1080, 30 fps — which you can commit, self-host and publish anywhere.</li>
+      <li><b>🔴🔵 This project is the proof.</b> <a href="index.html">The video on the home page</a> was made exactly this way: a deck imported as ten scenes, narrated, scored, captioned, exported.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="access">
+  <div class="wrap">
+    <p class="eyebrow">🔑 Before you start</p>
+    <h2>🔑 Getting access</h2>
+    <p class="sub">Google Vids is <b>not</b> a free standalone product. It ships inside paid Google Workspace, priced per user per month — so the prerequisite is a seat, not a download.</p>
+    <div class="note">
+      <b>💳 Verified pricing anchor:</b> UK <b>£11.80/user/month list</b>, excluding tax, for the entry business tier at time of capture, with a <b>50% promotional rate (£5.90)</b> running for the first three months. Prices vary by region, billing period and promotion — always confirm on the <a href="https://workspace.google.com/pricing">live pricing page</a> rather than trusting a figure from any guide, including this one.
+    </div>
+    <ul class="clean">
+      <li><b>✅ What you need:</b> a Google Workspace account on a tier that includes Vids, signed into the same browser profile you'll use.</li>
+      <li><b>✅ What you do not need:</b> any desktop software. No download, no install, no GPU, no render farm.</li>
+      <li><b>🚫 What will not work:</b> a plain free <code>@gmail.com</code> account expecting the full Vids feature set. Personal-account access is narrower than a Workspace seat — if a feature in the walkthrough below is missing, check the seat before assuming the guide is wrong.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="steps">
+  <div class="wrap">
+    <p class="eyebrow">🧭 The walkthrough</p>
+    <h2>🧭 Step-by-step: first video to export</h2>
+    <p class="sub">In order. Do not skip step 2 — the ratio decided there is the frame you are stuck with for the rest of the project.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>🧠 Write the script somewhere else</h3>
+          <p>Do not open Vids first. Dictate or draft the argument in Gemini and ask for it <em>in presentation form</em> — title, subtitle, three or four bolded points per slide. Vids is an assembly tool; the thinking happens before it.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>🎨 If you have a deck, fix the ratio now</h3>
+          <p>Vids imports Google Slides natively, and the deck's aspect ratio becomes the video frame. Set the deck to <strong>16:9</strong> <em>before</em> importing. A 4:3 deck imported into Vids gives you a 4:3 video, and there is no honest fix afterwards.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>📄 Create the video document</h3>
+          <p>From Google Drive or the Workspace app launcher, create a new <strong>Google Vids</strong> file. You get a blank timeline with a playhead and a media tray — the same layout as the first frame of any Doc.</p>
+          <p>Choose one of three starts: <strong>blank</strong>, a <strong>template</strong>, or <strong>import from Slides</strong>. For the project on this site it was the third.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>🎞️ Build the scenes</h3>
+          <p>Each slide you import lands as a <strong>scene</strong> with its own slot on the timeline. Reorder with the <code>Scene</code> menu; show or hide per-scene duration with <code>Show timing</code>. The readout at the top reads like <code>00:00.0 / 02:10.8</code> — playhead position over total runtime.</p>
+          <p>Treat the scene list as your outline. Ten scenes is a two-minute video; forty is a documentary nobody asked for.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>🖼️ Fill the media tray</h3>
+          <p>With the scenes in place, add the non-generated media: <strong>Uploads</strong> for your own files, <strong>Stock</strong> for licensed footage and images, <strong>Image</strong> for graphics, <strong>Record</strong> for a webcam or screen take.</p>
+          <p>Work in this order deliberately — structure first, decoration second. Adding stock video before the outline is settled is how twenty minutes of work gets thrown away.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>🎙️ Add the voiceover</h3>
+          <p>Every scene carries its own <strong>narrator line</strong>. You can type the script and let Vids generate the voice, record your own, or upload audio. In this project all ten scenes were AI-narrated — which is why the file has a clean AAC stereo track with no room noise.</p>
+          <p>Write for the ear, not the eye: shorter sentences than you would put on a slide.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>🎵 Score it, then balance</h3>
+          <p>Drop a bed from the <strong>Music</strong> library under the narration. Then run the audio cleanup — <em>Improve sound quality</em> and <em>Balance sound</em> — which levels speech against music across the whole video in one pass.</p>
+          <p>This is the step most first-timers skip, and it is the one that makes the difference between "AI made this" and "someone made this".</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>💬 Turn captions on</h3>
+          <p>Tap <strong>Captions</strong> in the tray. Burned-in captions mean the video works on mute, in a noisy office, and in every feed that autoplays silently. Free legibility, one toggle.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>🪄 Revise with a sentence, not a timeline</h3>
+          <p><strong>Reimagine your video</strong> takes a plain-language instruction — "describe any changes that you want to make, from a tiny tweak to a total transformation" — and re-cuts the video. Use it to tighten pacing or change tone rather than dragging clips frame by frame.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>👀 Review, then export</h3>
+          <p>Play it end to end once, at 1×. Watch for a slide that outlives its sentence and a narrator line that arrives late. Then <strong>export as MP4</strong> — 1920×1080, 30 fps, H.264 with AAC stereo.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num"></div>
+        <div>
+          <h3>📤 Publish the file, not a link</h3>
+          <p>You now own a plain MP4. Commit it to a repo, serve it from GitHub Pages with a <code>&lt;video&gt;</code> tag, and paste the same content into a community as a lesson. Because the export is an ordinary file, you are not locked into sharing a Workspace URL that requires the viewer to have access.</p>
+          <p>📌 That is exactly the pipeline behind this site — see <a href="index.html#pipeline">the four-move pipeline</a>.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="ui">
+  <div class="wrap">
+    <p class="eyebrow">🧰 Reference</p>
+    <h2>🧰 The real UI, mapped</h2>
+    <p class="sub">What is actually on screen, read off a live Vids document rather than from marketing copy. If a tutorial uses different words, this is the vocabulary to translate into.</p>
+
+    <h3 style="margin-bottom:12px">📋 Menu bar</h3>
+    <div class="tray">
+      <span>📁 File</span><span>✏️ Edit</span><span>👁️ View</span><span>➕ Insert</span>
+      <span>🔤 Format</span><span class="hot">🎞️ Scene</span><span>🧲 Arrange</span>
+      <span>🔧 Tools</span><span>❓ Help</span><span class="hot">▶️ Play</span><span>🔗 Share</span>
+    </div>
+
+    <h3 style="margin:30px 0 12px">🧰 Media tray</h3>
+    <div class="tray">
+      <span class="hot">✨ AI video</span><span>🧑‍💼 Avatar</span><span>🎙️ Voiceover</span>
+      <span>🎵 Music</span><span>🖼️ Image</span><span>⏺️ Record</span>
+      <span>📤 Uploads</span><span>📚 Stock</span><span>💬 Captions</span>
+      <span>🔤 Text</span><span>🧩 Templates</span><span>🔷 Shapes</span>
+    </div>
+
+    <h3 style="margin:30px 0 12px">⏱️ Timeline &amp; audio</h3>
+    <div class="tray">
+      <span class="hot">⏱️ Show timing</span><span class="hot">🎚️ Balance sound</span>
+      <span>🔊 Improve sound quality</span><span>🪄 Reimagine your video</span>
+      <span>♿ Screen reader support</span>
+    </div>
+
+    <div class="note g" style="margin-top:30px">
+      <b>🎯 The two controls worth learning first:</b> <code>Scene</code> (structural — reorder and retime the video) and <code>Balance sound</code> (perceptual — makes generated audio sound intentional). Almost everything else is decoration.
+    </div>
+  </div>
+</section>
+
+<section id="watch">
+  <div class="wrap">
+    <p class="eyebrow">🎥 Watch list</p>
+    <h2>🎥 Videos on Google Vids — and the concepts behind it</h2>
+    <p class="sub">✅ Every video below was checked to exist and to permit embedding before being placed here — titles and channels read back from YouTube's own oEmbed API, not copied from search results. Click any thumbnail to load the player in place. 🔗</p>
+
+    <div class="vgroup">
+      <div class="vgh"><h3>📹 Start here — official</h3><span class="tag">1 video</span></div>
+      <div class="vids">
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=qwmu5GlThyw" data-id="qwmu5GlThyw" aria-label="Play: Intro to Google Vids"></a>
+          <div class="vidmeta">
+            <span class="t">Intro to Google Vids</span>
+            <span class="c"><span class="badge off">✅ Official</span><span>Google Workspace</span><span>4:18</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="vgroup">
+      <div class="vgh"><h3>🛠️ Full tutorials — pick one, not all</h3><span class="tag">7 videos</span></div>
+      <div class="vids">
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=k_C9ye4PFIA" data-id="k_C9ye4PFIA" aria-label="Play: Google Vids Explained, Full Beginner Guide to Video Creation"></a>
+          <div class="vidmeta">
+            <span class="t">Google Vids Explained — Full Beginner Guide to Video Creation</span>
+            <span class="c"><span class="badge core">🚀 Shortest</span><span>Outright Systems</span><span>3:16</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=mJdTl9BfHCA" data-id="mJdTl9BfHCA" aria-label="Play: How To Use Google Vids (Advanced AI Features)"></a>
+          <div class="vidmeta">
+            <span class="t">How To Use Google Vids — Advanced AI Features</span>
+            <span class="c"><span>Dean Stokes - Tech Tutorials</span><span>4:55</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=MMvjBRJdkA8" data-id="MMvjBRJdkA8" aria-label="Play: Google Vids: Your New AI Video Maker?"></a>
+          <div class="vidmeta">
+            <span class="t">Google Vids: Your New AI Video Maker?</span>
+            <span class="c"><span>Tool Finder</span><span>10:46</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=J5mdP0Q0nn4" data-id="J5mdP0Q0nn4" aria-label="Play: Google Vids Tutorial for Beginners"></a>
+          <div class="vidmeta">
+            <span class="t">Google Vids Tutorial for Beginners — How to Create Videos with AI</span>
+            <span class="c"><span class="badge core">👶 Beginner</span><span>Kevin Stratvert</span><span>13:31</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=yhTiU-W78dA" data-id="yhTiU-W78dA" aria-label="Play: How To Use Google Vids (Beginner's Guide)"></a>
+          <div class="vidmeta">
+            <span class="t">How To Use Google Vids — Beginner's Guide</span>
+            <span class="c"><span>Dean Stokes - Tech Tutorials</span><span>13:58</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=DRh_c6tj_e0" data-id="DRh_c6tj_e0" aria-label="Play: How to use Google Vids - Tutorial for Beginners"></a>
+          <div class="vidmeta">
+            <span class="t">How to use Google Vids — Tutorial for Beginners</span>
+            <span class="c"><span>Simpletivity</span><span>16:58</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=5kE2lBhzeak" data-id="5kE2lBhzeak" aria-label="Play: How to Use Google Vids: Google's New AI Video Tool"></a>
+          <div class="vidmeta">
+            <span class="t">How to Use Google Vids: Google's New AI Video Tool</span>
+            <span class="c"><span class="badge core">🎓 Deepest</span><span>Justin Brown - Primal Video</span><span>21:41</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="vgroup">
+      <div class="vgh"><h3>⚙️ The concept — multi-agent orchestration</h3><span class="tag">6 videos</span></div>
+      <div class="vids">
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=iJSuTg1SkxM" data-id="iJSuTg1SkxM" aria-label="Play: What Is Multi-Agent Orchestration in AI?"></a>
+          <div class="vidmeta">
+            <span class="t">What Is Multi-Agent Orchestration in AI?</span>
+            <span class="c"><span class="badge core">⚡ 1 min</span><span>SimplAI</span><span>1:22</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=X3XJeTApVMM" data-id="X3XJeTApVMM" aria-label="Play: What Are Orchestrator Agents?"></a>
+          <div class="vidmeta">
+            <span class="t">What Are Orchestrator Agents? AI Tools Working Smarter Together</span>
+            <span class="c"><span>IBM Technology</span><span>4:24</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=Ons1Fv3IE4U" data-id="Ons1Fv3IE4U" aria-label="Play: Orchestrator Agents &amp; MCP"></a>
+          <div class="vidmeta">
+            <span class="t">Orchestrator Agents &amp; MCP: How AI Agents Drive Automation</span>
+            <span class="c"><span>IBM Technology</span><span>6:42</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=sWH0T4Zez6I" data-id="sWH0T4Zez6I" aria-label="Play: Multi Agent Systems Explained"></a>
+          <div class="vidmeta">
+            <span class="t">Multi Agent Systems Explained: How AI Agents &amp; LLMs Work Together</span>
+            <span class="c"><span>IBM Technology</span><span>7:57</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=FwOTs4UxQS4" data-id="FwOTs4UxQS4" aria-label="Play: AI Agents, Clearly Explained"></a>
+          <div class="vidmeta">
+            <span class="t">AI Agents, Clearly Explained</span>
+            <span class="c"><span>Jeff Su</span><span>10:09</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=ZVPlLaehjLk" data-id="ZVPlLaehjLk" aria-label="Play: Agentic AI Frameworks Explained"></a>
+          <div class="vidmeta">
+            <span class="t">Agentic AI Frameworks Explained: Workflows, Multi-Agent &amp; Production</span>
+            <span class="c"><span>IBM Technology</span><span>11:54</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="vgroup">
+      <div class="vgh"><h3>💰 The concept — token economics &amp; cost governance</h3><span class="tag">5 videos</span></div>
+      <div class="vids">
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=OjrGu0L5K7M" data-id="OjrGu0L5K7M" aria-label="Play: What is an AI Token?"></a>
+          <div class="vidmeta">
+            <span class="t">What is an AI Token? — LLM Tokens explained in 2 minutes</span>
+            <span class="c"><span class="badge core">⚡ 2 min</span><span>Azure Innovation Station</span><span>1:59</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=Gauk0F6UBFo" data-id="Gauk0F6UBFo" aria-label="Play: AI Foundations: Tokens &amp; Pricing"></a>
+          <div class="vidmeta">
+            <span class="t">AI Foundations: Tokens &amp; Pricing</span>
+            <span class="c"><span>Cursor</span><span>3:33</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=FheRqx7DjbU" data-id="FheRqx7DjbU" aria-label="Play: Goodbye Tokenmaxxing"></a>
+          <div class="vidmeta">
+            <span class="t">Goodbye Tokenmaxxing: From AI Usage to Agentic AI Outcomes</span>
+            <span class="c"><span>IBM Technology</span><span>8:26</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=glttBBNorlQ" data-id="glttBBNorlQ" aria-label="Play: AI Token Economics: Real Costs of Running Models in 2026"></a>
+          <div class="vidmeta">
+            <span class="t">AI Token Economics: Real Costs of Running Models in 2026</span>
+            <span class="c"><span class="badge core">📊 On-topic</span><span>WEKA</span><span>10:28</span></span>
+          </div>
+        </div>
+
+        <div class="vid">
+          <a class="facade" href="https://www.youtube.com/watch?v=-Hi8Zgt0e9U" data-id="-Hi8Zgt0e9U" aria-label="Play: AI Token Cost Management: Control Margins at Scale"></a>
+          <div class="vidmeta">
+            <span class="t">AI Token Cost Management: Control Margins at Scale</span>
+            <span class="c"><span class="badge core">🏢 Enterprise</span><span>Kong</span><span>34:34</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:34px">
+      <b>⚠️ Why these are embedded, not linked:</b> embeds play in place, so you can watch the official intro, then jump straight to the cost videos without losing this page. If a video ever becomes private or region-blocked, the thumbnail still links to the YouTube watch page — the link degrades, it does not break.
+    </div>
+  </div>
+</section>
+
+<section id="gotchas">
+  <div class="wrap">
+    <p class="eyebrow">⚠️ Gotchas</p>
+    <h2>⚠️ What goes wrong, and how to avoid it</h2>
+    <ul class="clean">
+      <li><b>📐 Wrong ratio, unfixable frame.</b> The deck's aspect ratio becomes the video's. Choose 16:9 before importing, not after.</li>
+      <li><b>🔇 Not balancing audio.</b> Generated narration over a music bed without a balance pass sounds like a demo. <code>Balance sound</code> is one click and it is the difference.</li>
+      <li><b>💬 Captions off.</b> Most of your audience meets this video muted. Leaving captions off halves the people who can follow it.</li>
+      <li><b>🎬 Too many scenes.</b> Slide count becomes runtime. Ten scenes ≈ two minutes; the format punishes padding because the viewer cannot skim.</li>
+      <li><b>🔗 Sharing the doc instead of the export.</b> A Vids URL needs the viewer to have Workspace access. Export the MP4 and self-host it — that is the point of a document type with a file output.</li>
+      <li><b>💳 Assuming it is free.</b> Vids comes with a paid Workspace seat. Budget the seat, not the editor.</li>
+      <li><b>🪄 Over-relying on Reimagine.</b> It is excellent for pacing and tone. It is not a substitute for having decided what the video argues.</li>
+    </ul>
+    <div class="note g">
+      <b>✅ The 60-second version:</b> write the script in Gemini → set the deck to 16:9 → create a Vids doc → import the deck → AI voiceover per scene → music and <em>Balance sound</em> → captions on → export MP4 → publish the file.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p style="color:var(--grey)"><strong style="color:var(--white)">🚢 Deploy Bulk. Govern Tight.</strong><br>Scale agent creation through automated dispatch while keeping API costs and quality strictly verified.</p>
+    <div class="row">
+      <a href="index.html">🎬 The video page</a>
+      <a href="costs.html">💰 The Cost Ledger</a>
+      <a href="https://github.com/rifaterdemsahin/slides-to-video">📦 Repository</a>
+      <a href="https://docs.google.com/videos/d/1AWB8ILIC7G9ZK4cJNznjJeK7Tn_sBF7gsOlEwxm1IGs/edit">📹 The Vids document</a>
+      <a href="https://workspace.google.com/pricing">💳 Workspace pricing</a>
+    </div>
+    <p style="margin-top:22px;font-size:12px">✍️ Rifat Erdem Sahin · built with 🧠 Gemini + 🎬 Google Vids</p>
+  </div>
+</footer>
+
+<script>
+/* Click-to-play facade: swap the thumbnail for the YouTube iframe on demand.
+   The <a> href stays intact, so with JS disabled the thumbnail is a normal outbound link. */
+(function () {
+  var embeds = 0;
+  document.querySelectorAll('.facade').forEach(function (a) {
+    var id = a.getAttribute('data-id');
+    if (!id) return;
+    a.style.backgroundImage = "url('https://i.ytimg.com/vi/" + id + "/hqdefault.jpg')";
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (a.dataset.loaded) return;
+      a.dataset.loaded = '1';
+      embeds++;
+      var f = document.createElement('iframe');
+      f.setAttribute('src', 'https://www.youtube-nocookie.com/embed/' + id +
+        '?autoplay=1&rel=0&modestbranding=1');
+      f.setAttribute('title', a.getAttribute('aria-label') || 'YouTube video player');
+      f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+      f.setAttribute('allowfullscreen', '');
+      f.setAttribute('loading', 'lazy');
+      a.textContent = '';
+      a.appendChild(f);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

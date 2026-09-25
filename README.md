@@ -3,17 +3,19 @@
 **Google's new video *document* type — a fully narrated, captioned and scored video built from a 🧠 Gemini conversation and a 🎨 Google Slides deck, without touching an editor.**
 
 📺 **Live:** https://rifaterdemsahin.github.io/slides-to-video/
-💰 **Cost breakdown:** https://rifaterdemsahin.github.io/slides-to-video/costs.html
 
 ---
 
 ## 📦 What this repository contains
 
-| File | What it is |
+| Page | What it is |
 |---|---|
-| 🎬 [`index.html`](index.html) | One-page site — the video, the 10-scene storyboard, Google Vids feature breakdown, publish-to-Skool guide |
+| 🎬 [`index.html`](index.html) | **The video** — the 10-scene storyboard, Google Vids feature breakdown, publish-to-Skool guide |
+| 📹 [`how-to-google-vids.html`](how-to-google-vids.html) | **How to use Google Vids** — step-by-step walkthrough grounded in the real UI, plus a verified YouTube watch list |
 | 💰 [`costs.html`](costs.html) | **The Cost Ledger** — recurring agent API burn vs the one-off production spend of the video |
-| 📹 [`scaling-ai-agents-chief-of-staff-and-cost-governance.mp4`](scaling-ai-agents-chief-of-staff-and-cost-governance.mp4) | The exported video — 1920×1080, 30 fps, 2 min 10 s, 3.8 MB, H.264 + AAC stereo |
+| 🎥 [`scaling-ai-agents-chief-of-staff-and-cost-governance.mp4`](scaling-ai-agents-chief-of-staff-and-cost-governance.mp4) | The exported video — 1920×1080, 30 fps, 2 min 10 s, 3.8 MB, H.264 + AAC stereo |
+
+🔗 Pages: [🎬 video](https://rifaterdemsahin.github.io/slides-to-video/) · [📹 how-to](https://rifaterdemsahin.github.io/slides-to-video/how-to-google-vids.html) · [💰 costs](https://rifaterdemsahin.github.io/slides-to-video/costs.html)
 
 ## 🎥 The video
 
@@ -27,7 +29,13 @@ The two rules the film ends on:
 
 > 🔒 Do not spend API dollars on unreviewed output.
 
-## 🧭 How it was made
+## 📹 How to use Google Vids
+
+A click-path walkthrough — create the doc, import a deck as scenes, AI-narrate each scene, score it and run **Balance sound**, switch captions on, revise with **Reimagine your video**, export MP4. Includes a map of the real menu bar and media tray (📁 File / 🎞️ Scene / ▶️ Play / ✨ AI video / 🎙️ Voiceover / 🎚️ Balance sound), the seven gotchas, and the pricing reality: **Vids ships inside paid Google Workspace, it is not a free standalone tool**.
+
+**🎥 Watch list — 22 embedded videos, every one verified.** Grouped into 📹 official intro, 🛠️ full tutorials, ⚙️ multi-agent orchestration, and 💰 token economics. Each was confirmed to exist *and* permit embedding via YouTube's oEmbed API before being placed on the page — titles, channels and durations read back from source, not copied from search results. Thumbnails are click-to-play (a facade swaps in the `youtube-nocookie` iframe on demand), so the page loads without 22 iframes and the links still work with JavaScript disabled.
+
+## 🧭 How the video was made
 
 Four moves. 🚫📷 No camera, 🚫✂️ no editor, 🚫🎞️ no timeline software.
 
@@ -39,31 +47,29 @@ Four moves. 🚫📷 No camera, 🚫✂️ no editor, 🚫🎞️ no timeline so
 4. 🚀 EXPORT       MP4 → commit → GitHub Pages
 ```
 
-**1. 🧠 Create the script with Gemini.** Dictate the idea as if explaining it to a colleague — real numbers, real objections — then ask for it in presentation form. Gemini turns the rambling transcript into a title, a subtitle and 3–4 bolded points per slide.
+**1. 🧠 Create the script with Gemini.** Dictate the idea as if explaining it to a colleague — real numbers, real objections — then ask for it in presentation form.
 ↳ 🔗 [source conversation](https://gemini.google.com/share/d/1AXSsTFxFefXaasYa4QUk_aoN_-uHKR_5)
 
-**2. 🎨 Design the deck — Google Slides, 16:9.** Paste the script into a **16:9** deck; that aspect ratio becomes the video frame, so it must be set here. Hold one visual language across every slide: monospace all-caps eyebrow, heavy white title, grey one-line deck, and a 🔵🔴 blue + red two-bar accent.
+**2. 🎨 Design the deck — Google Slides, 16:9.** That aspect ratio becomes the video frame, so it must be set here. Hold one visual language across every slide: monospace all-caps eyebrow, heavy white title, grey one-line deck, and a 🔵🔴 blue + red two-bar accent.
 ↳ 🔗 [source deck](https://docs.google.com/presentation/d/1LxohuJdkUOFROYpKfol89acD-YIetO_Xwq0KiUtpcFo/edit)
 
-**3. 🎬 Assemble the video in Google Vids.** Import the deck; each slide becomes a timed scene. Add 🎙️ AI voiceover per scene, a 🎵 licensed music bed, 💬 auto-captions, then run *Improve sound quality → 🎚️ Balance sound*. You fix the video the way you edit a deck, not footage.
+**3. 🎬 Assemble the video in Google Vids.** Each slide becomes a timed scene. Add 🎙️ AI voiceover, a 🎵 licensed music bed, 💬 captions, then *Improve sound quality → 🎚️ Balance sound*.
 ↳ 🔗 [Vids document](https://docs.google.com/videos/d/1AWB8ILIC7G9ZK4cJNznjJeK7Tn_sBF7gsOlEwxm1IGs/edit)
 
-**4. 🚀 Export, then publish.** Export MP4 → commit → serve from GitHub Pages → paste the storyboard into Skool as a classroom lesson.
+**4. 🚀 Export, then publish.** MP4 → commit → GitHub Pages → paste the storyboard into Skool as a classroom lesson.
 
 ### 🛠️ What Google Vids actually is
 
-A Workspace **document** type, not a Drive video. 📍 It lives at `docs.google.com/videos/<id>`. The scene timeline *is* the document body; the media tray is the toolbar — ✨ AI video, 🧑‍💼 avatar, 🎙️ voiceover, 🎵 music, 🖼️ image, ⏺️ record, 📤 uploads, 📚 stock, 💬 captions, 🔤 text, 🧩 templates, 🔷 shapes, plus **🪄 Reimagine your video** (describe a change in a sentence and Gemini re-cuts). Because it imports Slides natively and exports a plain MP4, it drops into a pipeline that already starts in Docs or Slides.
+A Workspace **document** type, not a Drive video. 📍 `docs.google.com/videos/<id>`. The scene timeline *is* the document body; the media tray is the toolbar — ✨ AI video, 🧑‍💼 avatar, 🎙️ voiceover, 🎵 music, 🖼️ image, ⏺️ record, 📤 uploads, 📚 stock, 💬 captions, 🔤 text, 🧩 templates, 🔷 shapes, plus **🪄 Reimagine your video**. Because it imports Slides natively and exports a plain MP4, it drops into a pipeline that already starts in Docs or Slides.
 
 ## 💰 The cost ledger
 
-Two columns, and they must never be confused.
+Two columns that must never be confused.
 
-- 💸 **Column A — recurring burn.** Per-token API calls, per agent, per day. Grows with activity, compounds with headcount, and never arrives as a decision anyone approved. This is the column the **$20 → $100+** curve lives in.
-- 🎬 **Column B — one-off production.** One Workspace seat (Google Vids ships *inside* paid Workspace — UK list £11.80/user/month ex-tax at time of capture), Gemini free tier, GitHub Pages free. No editor, no studio, no separately-bought music licence. **0 timeline hours.**
+- 💸 **Column A — recurring burn.** Per-token API calls, per agent, per day. Compounds with headcount, and never arrives as a decision anyone approved. This is the column the **$20 → $100+** curve lives in.
+- 🎬 **Column B — one-off production.** One Workspace seat, Gemini free tier, GitHub Pages free. No editor, no studio, no separately-bought music licence. **0 timeline hours.**
 
-The page also carries the guardrail levers (route-before-prompt, context caps, model laddering, cache, retry budgets, the human gate), a budget-sheet template, and a provenance block naming what is verified versus what is not.
-
-➡️ **[Open costs.html](costs.html)**
+Includes guardrail levers, a budget-sheet template, and a provenance block naming what is verified versus what is not. **No per-token rates are published** — rates move per model, provider and region, and a stale rate on a cost page is worse than a blank cell.
 
 ## 📣 Publishing to Skool
 
@@ -75,7 +81,7 @@ Destination: the **Delivery Pilot** community classroom — the Step 0 → Step 
 4. 📝 Body: paste the 10-scene storyboard table from `index.html` — Skool lessons are markdown (the lesson URL carries it as `?md=<hash>`).
 5. 📎 Attach the MP4. Post a short community announcement pointing at the lesson.
 
-💸 Lead with the cost curve (**$20 → $100+**) — that's the constraint the audience has already felt — then present the deterministic/generative split as the fix.
+💸 Lead with the cost curve (**$20 → $100+**) — the constraint the audience has already felt — then present the deterministic/generative split as the fix.
 
 ---
 
