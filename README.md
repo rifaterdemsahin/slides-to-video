@@ -33,7 +33,7 @@ The two rules the film ends on:
 
 A click-path walkthrough — create the doc, import a deck as scenes, AI-narrate each scene, score it and run **Balance sound**, switch captions on, revise with **Reimagine your video**, export MP4. Includes a map of the real menu bar and media tray (📁 File / 🎞️ Scene / ▶️ Play / ✨ AI video / 🎙️ Voiceover / 🎚️ Balance sound), the seven gotchas, and the pricing reality: **Vids ships inside paid Google Workspace, it is not a free standalone tool**.
 
-**🎥 Watch list — 22 embedded videos, every one verified.** Grouped into 📹 official intro, 🛠️ full tutorials, ⚙️ multi-agent orchestration, and 💰 token economics. Each was confirmed to exist *and* permit embedding via YouTube's oEmbed API before being placed on the page — titles, channels and durations read back from source, not copied from search results. Thumbnails are click-to-play (a facade swaps in the `youtube-nocookie` iframe on demand), so the page loads without 22 iframes and the links still work with JavaScript disabled.
+**🎥 Watch list — 19 embedded videos, every one verified.** Grouped into 📹 official intro, 🛠️ full tutorials, ⚙️ multi-agent orchestration, and 💰 token economics. Each was confirmed to exist *and* permit embedding via YouTube's oEmbed API before being placed on the page — titles, channels and durations read back from source, not copied from search results. Thumbnails are click-to-play (a facade swaps in the `youtube-nocookie` iframe on demand), so the page loads without 19 iframes and the links still work with JavaScript disabled.
 
 ## 🧭 How the video was made
 

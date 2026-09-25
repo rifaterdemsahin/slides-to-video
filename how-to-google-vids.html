@@ -85,6 +85,14 @@
   th{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:500}
   td:first-child{color:var(--white);font-weight:600}
   .green{color:var(--green)} .red{color:var(--red)} .amber{color:var(--amber)}
+  figure{margin:34px 0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+  figure img{display:block;width:100%;height:auto;border-radius:6px;border:1px solid var(--line)}
+  figcaption{font-size:12.5px;color:var(--dim);margin-top:12px;font-family:var(--mono);letter-spacing:.02em;line-height:1.62}
+  .ui{display:grid;gap:12px;margin-top:24px}
+  .ui .row{display:grid;grid-template-columns:30px 1fr;gap:12px;font-size:14.5px}
+  .ui .ic{font-size:16px;line-height:1.55}
+  .ui .row b{color:var(--white)}
+  .ui code{font-size:12px}
   footer{padding:56px 0 80px;color:var(--dim);font-size:13px}
   footer .row{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:12px}
   @media(max-width:600px){header{padding:64px 0 48px}.step{grid-template-columns:30px 1fr;gap:12px}td:first-child{white-space:normal}}
@@ -110,6 +118,7 @@
       <a href="#access">🔑 Access</a>
       <a href="#steps">🧭 Step-by-step</a>
       <a href="#ui">🧰 The real UI</a>
+      <a href="#slides-ai">🧠 Gemini in Slides</a>
       <a href="#watch">🎥 Watch list</a>
       <a href="#gotchas">⚠️ Gotchas</a>
     </div>
@@ -128,6 +137,57 @@
       <li><b>📤 The output is a real file.</b> Export produces a normal MP4 — H.264, 1920×1080, 30 fps — which you can commit, self-host and publish anywhere.</li>
       <li><b>🔴🔵 This project is the proof.</b> <a href="index.html">The video on the home page</a> was made exactly this way: a deck imported as ten scenes, narrated, scored, captioned, exported.</li>
     </ul>
+  </div>
+</section>
+
+
+<section id="slides-ai">
+  <div class="wrap">
+    <p class="eyebrow">🧠 AI usage · the upstream half of the pipeline</p>
+    <h2>🧠 The other entry point — Gemini inside Google Slides</h2>
+    <p class="sub">Everything else on this page assumes you wrote the script somewhere else and pasted it into a deck. 🎯 You do not have to. Slides has a Gemini panel that generates the deck in place — prompt in, slides out, no copy-paste step. This screenshot is that panel mid-thought.</p>
+
+    <figure>
+      <img src="assets/gemini-in-slides.jpg" width="1280" height="962" loading="lazy"
+           alt="Google Slides with the Gemini Alpha side panel open. The prompt reads &quot;create slides explaining why use hermes nous research tool to manage wour agents&quot;. Gemini replies &quot;Determining Style Preferences — I'm now identifying your preferred visual theme using options and rationale based on your preferences.&quot; The deck is Untitled presentation, slide 1 still blank with &quot;Click to add title&quot; and &quot;Click to add subtitle&quot;. The right-hand insert rail lists Slide, Image, Media, Uploads, Record, Speaker and a greyed-out Transform. Below sits an Ask Gemini input with the footer &quot;Gemini in Workspace can make mistakes. Learn more&quot;.">
+      <figcaption>📸 Google Slides · Gemini Alpha panel, mid-generation. The slide canvas is still empty — this frame captures the deciding phase, before any content has landed.</figcaption>
+    </figure>
+
+    <h3 style="margin-top:40px">🔍 Reading the screenshot, element by element</h3>
+    <div class="ui">
+
+      <div class="row"><span class="ic">🧩</span><span><b>The panel is labelled <em>Gemini Alpha</em>.</b> <code>Alpha</code> is a preview tier, not general availability. Expect the panel's capability set, wording and placement to change — and don't build a documented process around an Alpha surface without saying so, which is exactly why it's flagged here.</span></div>
+
+      <div class="row"><span class="ic">💬</span><span><b>The prompt, verbatim:</b> <code>create slides explaining why use hermes nous research tool to manage wour agents</code> — including the typo (<code>wour</code> for <em>your</em>), carried through unedited. Two things worth noting: prompts do not have to be pristine to work, and the prompt itself is on-thesis — it is a request for slides about using an agent-orchestration tool to manage agents.</span></div>
+
+      <div class="row"><span class="ic">🎨</span><span><b><em>Determining Style Preferences</em> — the most important line on the screen.</b> Gemini's own stated rationale: <em>&ldquo;I'm now identifying your preferred visual theme using options and rationale based on your preferences.&rdquo;</em> It resolves <b>visual theme before content</b>. That single behaviour explains why AI-generated decks so often look like somebody else's taste — and it is the step you must consciously override if you want a deck to match a house style.</span></div>
+
+      <div class="row"><span class="ic">📄</span><span><b>The deck is still <em>Untitled presentation</em>, slide 1 blank</b> — placeholder boxes reading <em>Click to add title</em> and <em>Click to add subtitle</em>. Nothing has been written yet. This is the deliberation phase, which is useful to see: the delay before output is the theme selection, not slow text generation.</span></div>
+
+      <div class="row"><span class="ic">➕</span><span><b>The right-hand insert rail</b> — <code>Slide</code>, <code>Image</code>, <code>Media</code>, <code>Uploads</code>, <code>Record</code>, <code>Speaker</code>, <code>Transform</code>. These are Slides' native insert actions, not Gemini's. <code>Slide</code> is the highlighted/active one. <b><code>Transform</code> is greyed out</b> (inactive) because there is no finished content on the slide for it to restyle — the same reason it stays inert on any empty slide.</span></div>
+
+      <div class="row"><span class="ic">⌨️</span><span><b>The persistent <em>Ask Gemini</em> box</b> with its attach/tool icons and send control — the affordance you return to for every follow-up. Iterating here is far cheaper than re-prompting from scratch: ask for one slide's tone to change rather than regenerating nine.</span></div>
+
+      <div class="row"><span class="ic">⚠️</span><span><b>Footer: <em>&ldquo;Gemini in Workspace can make mistakes. Learn more&rdquo;</em></b> — Google's own accuracy disclaimer, sitting permanently under the input. Treat generated slides as a first draft that requires a read-through, not a finished deliverable.</span></div>
+
+    </div>
+
+    <h3 style="margin-top:44px">🎯 Why this matters for the video pipeline</h3>
+    <ul class="clean">
+      <li><b>⚡ It collapses two steps into one.</b> Prompt directly to deck means no dictation outside and no paste — the deck <em>is</em> the first artefact. If you are starting from nothing, this is the shortest path to slide one.</li>
+      <li><b>🎨 It takes over your visual decisions.</b> Because Gemini resolves a theme before content, the output arrives pre-styled. Building the dark-navy deck with the blue/red two-bar accent used in <a href="index.html">the video on this site</a> means overriding that default rather than accepting it.</li>
+      <li><b>📐 You still have to fix the ratio yourself.</b> Nothing in this panel guarantees 16:9, and the deck's ratio becomes the video's frame once it reaches Vids. Set it before you import.</li>
+      <li><b>🧰 The rail is the bridge to Vids.</b> <code>Image</code>, <code>Media</code>, <code>Uploads</code>, <code>Record</code> and <code>Speaker</code> are the same kinds of media that later become scenes and narration — so populating them here reduces work in the video stage.</li>
+      <li><b>🔗 It closes the loop on the argument.</b> The prompt is about using an agent-orchestration tool to manage agents — the same subject as the film. The video was made with the workflow it describes. 📹 See <a href="#steps">the step-by-step walkthrough</a>.</li>
+    </ul>
+
+    <div class="note">
+      <b>⚠️ Honest limits of this screenshot:</b> it is <b>one frame of an intermediate state</b>, not a finished deck — no slides have been produced yet, so it proves the panel exists and describes its behaviour, and nothing more. It is <b>Alpha</b>, so it may not match what you see today. And a single screenshot cannot show output quality; judge that on a generated deck, not on this image.
+    </div>
+
+    <div class="note g">
+      <b>✅ The practical rule:</b> to <em>start</em>, let Gemini in Slides generate the deck. To <em>ship</em>, override the theme, set 16:9, and export into Vids. Generation is a drafting tool; the taste is still yours.
+    </div>
   </div>
 </section>
 
